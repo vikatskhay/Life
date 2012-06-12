@@ -1,0 +1,95 @@
+INTRO
+
+A short intro.
+
+Because of lack of time and the fact that a testing assignment is not about creating a real
+business-critical application with majority of code serving non-typical usecases (exception handling, validating,
+etc.), the application I did is quite straightforward and simple. The view is basic, error handling is minimized
+as well as the number of used technologies and libraries (also not to overload the program) and implementation of
+the Life algorithm generally demonstrates the algorithm itself without deep optimization subtleties (like bit
+operations or super-optimized complex data structures).
+
+
+REQUIREMENTS
+
+    * PHP 5.3 or later.
+    * Zlib.
+    * Memcached (optional).
+    * Postgres (version actually doesn't matter, the database structure and queries are very simple).
+    * A Postgres role "john_conway" must be created:
+
+         CREATE ROLE john_conway LOGIN NOSUPERUSER NOINHERIT NOCREATEDB NOCREATEROLE;
+
+
+DESIGN PREREQUISITES
+
+Conventions:
+
+    * Always first Y, then X.
+    * Names of private and helper functions, variables and scripts start with an underscore "_".
+ 
+Storage:
+
+    PostgreSQL vs. MySQL. Generally doesn't matter for this kind of task. I prefer Postgres.
+
+    The storage issue is the most bottleneckish in this application. Things like the speed of the Life
+    algorithm or memory usage cannot compare to resources needed to deal with persistency.
+    Therefore, I decided to first make up how to organize storing data and the rest would be taken from there.
+
+    Though I didn't have time to search for the most effective solution that I could ever find, I did some quick tests
+    on how to better represent a Life generation in a database. Of course, the shorter, the better. I was considering:
+
+    * listing coordinates of live cells and then compressing the string;
+    * packing a Life bitmap into a list of integers (1 int -> 32 cells) and then compressing the string;
+    * saving control points (full state) every say 5 iterations and the rest as diffs;
+    * etc.
+
+    Somehow the most efficient solution turned out to be a simple bitmap stringified (e.g. "10001001000010")
+    and compressed with ZIP. Of course compressing is not that cheap but probably cheaper than possible diskspace
+    usage, esp. for large complex populations and long simulation sessions.
+
+    I was thinking of the blob datatype to store a compressed generation, but my brief tests with it in PHP/PDO failed
+    and I simply didn't have time to make it work, so I just decided to hex the binary string.
+
+    Hashing pieces of a Life bitmap and revealing common Life patterns (like in complex hashlife algorithms) seemed
+    very attractive to me, but again - just didn't have time for researching and inventing this.
+
+View:
+
+    Ajax is used for getting new and old generations from the backend. There are 2 main interactive pages:
+
+    * life      - the main window with Life simulation;
+    * history   - the window for browsing a life's history.
+
+    The life page is initialized with a Life grid and the first population. Then on every new iteration
+    the backend returns a list of changes compared to a previous state: a map of coordinates and actions
+    (-1 = kill, 1 = add). Then a javascript function applies these changes to the grid.
+
+    The history page on every ajax request to the backend receives a full Life bitmap and (re)draws a Life grid.
+
+Algorithm:
+
+    There are a lot of ways to optimize the Life algorithm and none is good for all usecases. I picked 2 criterias
+    for optimization:
+
+    * using data structures ready to hand out to a database on the one hand, and to view on the other;
+    * speed of algorithm.
+
+Architecture:
+
+    MVC was picked for the architecture base. I've made a very simple straightforward structure:
+
+        /controller     Contains regular PHP scripts. A request's path reflects a script's path in this directory.
+        /model          Contains the Life classes - the model around which the web application is built.
+        /view           View templates.
+        Consts.php      Constants.
+        Logger.php      Logger.
+        Router.php      Router class incapsulates the logic that delegates request processing to a controller script.
+        Template.php    View templating.
+
+        /public         Application's public - entry point.
+
+OOP:
+
+    Normally I tend to prefer OOP over non-OOP. The model (Life) is implemented in classes while most of the web
+    application not, because it's too simple to be worth class framing.

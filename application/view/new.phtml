@@ -1,0 +1,140 @@
+<?php
+/**
+ * Variables:
+ */
+?>
+<script type="text/javascript">
+
+    function clearGrid()
+    {
+        // Kill living cells.
+        $('#lBitmap').children('div').each(function() {
+            if ($(this).hasClass('living')) {
+                $(this).removeClass('living');
+            }
+        });
+
+        // Clear the "changes" variable.
+        changes = {};
+    }
+
+    function generateRand()
+    {
+        // Clear the grid.
+        clearGrid();
+
+        // Random.
+        $('#lBitmap').children('div').each(function() {
+            if (Math.random() > RAND_LIFE_DENSITY) {
+                toggleCell($(this));
+            }
+        });
+    }
+
+    function lifeDefined() {
+        // Check if there is at least one living cell defined.
+        for (var cellId in changes) {
+            if (changes[cellId] == CHSTATUS_ADD) {
+                // Living cell found.
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    $(document).ready(function() {
+
+        // --------- Define handlers ---------
+
+        // The "Next" button.
+        $('#next').click(function() {
+            var tmpRows = $('#rows').val();
+            var tmpCols = $('#cols').val();
+
+            // Validate inpit data.
+            var badRows = !isPosNonZeroInt(tmpRows) && $('#rows').val('');
+            var badCols = !isPosNonZeroInt(tmpCols) && $('#cols').val('');
+
+            if (badRows || badCols) {
+                alert('Invalid input!');
+                return;
+            }
+
+            // The data is valid. Set global variables "rows" and "cols".
+            rows = tmpRows;
+            cols = tmpCols;
+
+            // Draw an empty grid.
+            drawEmptyGrid(rows, cols, true);
+
+            $('#fLife').css('display', 'inherit');
+            $('.fControls').css('display', 'inherit');
+            
+            $('#fInit').css('display', 'none');
+        });
+
+        // The "Random" link.
+        $('#rand').click(function() {
+            // Generate the 1st generation randomly.
+            generateRand();
+        });
+
+        // The "Clear" link.
+        $('#clear').click(function() {
+            // CLear the grid.
+            clearGrid();
+        });
+
+        // Form submit.
+        $('#form').submit(function() {
+            // Validate.
+            if (!lifeDefined()) {
+                // No living cells.
+                alert('Please define at least one living cell.');
+                return false;
+            }
+
+            // Set the input parameters.
+            $('#rows').val(rows);
+            $('#cols').val(cols);
+            $('#tweaks').val(JSON.stringify(changes));
+
+            return true;
+        });
+    });
+</script>
+
+<h2>Create new Life</h2>
+
+<form id="form" action="life" method="post">
+    <!-- Dimensions -->
+    <div id="fInit">
+        <h2>Step 1: Define dimensions</h2>
+
+        <input type="text"      id="rows"   name="rows" size="4" /> rows,
+        <input type="text"      id="cols"   name="cols" size="4" /> columns<br />
+        <input type="hidden"    id="tweaks" name="tweaks"/>
+        <br />
+        <input type="button"    id="next"   value="Next" class="bttn" />
+    </div>
+
+    <!-- The Life grid -->
+    <div id="fLife" style="display: none;">
+        <h2>Step 2: Define the first Generation</h2>
+
+        <h3>Generation #<span class="itNum">1</span></h3>
+    </div>
+
+    <!-- Controls -->
+    <div class="fControls" style="display: none;">
+        <div class="block">
+            <input type="button" value="Random" class="bttn" id="rand" />
+            <input type="button" value="Clear"  class="bttn" id="clear" />
+        </div>
+        
+        <div class="block">
+            <input type="submit" value="Done" class="bttn" />
+        </div>
+    </div>
+</form>

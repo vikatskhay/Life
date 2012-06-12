@@ -1,0 +1,87 @@
+<?php
+/**
+ * Variables:
+ *      lifeId
+ *      iteration
+ *      rows
+ *      cols
+ *      bitmap
+ *      tweaked
+ */
+?>
+<script type="text/javascript">
+
+    lifeId      = <?=$lifeId?>;
+    iteration   = <?=$iteration?>;
+    rows        = <?=$rows?>;
+    cols        = <?=$cols?>;
+    var bitmap  = <?=$bitmap?>;
+    var tweaked = <?=$tweaked?>;
+
+    $(document).ready(function() {
+
+        // Draw the Life.
+        redrawBitmap(bitmap, false);
+        if (tweaked) {
+            colourTweaked();
+        }
+
+        // --------- Define handlers ---------
+
+        // The "Goto" link.
+        $('#goto').click(function() {
+            // Load past generation.
+            var iter = parseInt($('#iter').val());
+
+            if (!isPosNonZeroInt(iter) && $('#iter').val(iteration)) {
+                // Invalid iteration entered.
+                alert('Invalid input!');
+                return false;
+            }
+
+            loadPast(iter);
+
+            return false;
+        });
+
+        // The "Next" link.
+        $('#next').click(function() {
+            // Load past generation.
+            loadPast(iteration + 1);
+
+            return false;
+        });
+
+        // The "Prev" link.
+        $('#prev').click(function() {
+            // Load past generation.
+            loadPast(iteration - 1);
+
+            return false;
+        });
+    })
+</script>
+
+<h2>Life <?=$lifeId?> - History</h2>
+
+<!-- Controls -->
+<div class="fControls">
+    <div class="block">
+        Genration #
+        <input id="iter" type="text"    value="<?=$iteration?>" size="4" />
+        <a id="goto" class="bttn" href="">Go</a>
+    </div>
+
+    <div class="block">
+        <a id="prev" class="bttn" href="">Prev</a>
+        <a id="next" class="bttn" href="">Next</a>
+    </div>
+</div>
+
+<!-- The Life grid -->
+<div id="fLife">
+    <h3>Generation #<span class="itNum"><?=$iteration?></span></h3>
+</div>
+
+<!-- Close link -->
+<a href="javascript:window.close()">Close</a>

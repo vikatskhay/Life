@@ -1,0 +1,116 @@
+<?php
+/**
+ * Variables:
+ *      lifeId
+ *      iteration
+ *      rows
+ *      cols
+ *      cells
+ */
+?>
+<script type="text/javascript">
+
+    lifeId      = <?=$lifeId?>;
+    iteration   = <?=$iteration?>;
+    rows        = <?=$rows?>;
+    cols        = <?=$cols?>;
+    var cells   = <?=$cells?>;
+
+    $(document).ready(function() {
+
+        // Draw the Life.
+        drawEmptyGrid(rows, cols, true);
+        drawChanges(cells);
+
+        // --------- Define handlers ---------
+
+        var INTERVAL = 500;
+        var intervalId;
+
+        // The "Play" link.
+        $('#play').click(function() {
+            // Play.
+            intervalId = window.setInterval(function() {
+                $('#next').click();
+            }, INTERVAL);
+
+
+            $('#pause').css('display', 'inline-block');
+            $('#next').css('display', 'none');
+            $(this).css('display', 'none');
+
+            return false;
+        });
+
+        // The "Pause" link.
+        $('#pause').click(function() {
+            // Pause.
+            window.clearInterval(intervalId);
+
+            $('#play').css('display', 'inline-block');
+            $('#next').css('display', 'inline-block');
+            $(this).css('display', 'none');
+
+            return false;
+        });
+
+        // The "Next" link.
+        $('#next').click(function() {
+            if (!$.isEmptyObject(changes)) {
+                // Save tweaks and tick.
+                saveTweaks(tick);
+            } else {
+                // Just tick.
+                tick();
+            }
+
+            return false;
+        });
+
+        // The "History" link.
+        $('#history').click(function() {
+            window.open(
+                    'history?id=' + lifeId,
+                    '_blank',
+                    'toolbar=no,location=no,directories=no,menubar=no,scrollbars=yes,resizable=1,width=600,height=600'
+                );
+
+            return false;
+        });
+
+        // --------- Click the "Play" link ---------
+
+        $('#play').click();
+    })
+</script>
+
+<h2>Life <?=$lifeId?></h2>
+
+<!-- Controls -->
+<div class="fControls">
+    <div class="block">
+        <a class="bttn" href="" id="play" style="display: none;">Play</a>
+        <a class="bttn" href="" id="pause">Pause</a>
+        <a class="bttn" href="" id="next">Next</a>
+    </div>
+</div>
+
+<!-- The Life grid -->
+<div id="fLife">
+    <h3>Generation #<span class="itNum"><?=$iteration?></span></h3>
+</div>
+
+<div class="fControls">
+    <!-- History link -->
+    <div class="block">
+        <a id="history" class="bttn" href="">View history</a>
+    </div>
+
+    <br />
+
+    <!-- New life link -->
+    <hr />
+    <div class="block">
+        <a class="bttn" href="life">Create new Life</a>
+    </div>
+</div>

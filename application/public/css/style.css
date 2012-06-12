@@ -1,0 +1,53 @@
+BODY, SELECT { font: 12px Tahoma, Arial, Helvetica; color: #444444; }
+
+H2 { font-size: 14px; font-weight: bold; }
+
+H3 { font-size: 12px; font-weight: bold; }
+
+INPUT { margin: 0 .1em .5em; }
+
+.bttn {
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+    -moz-box-shadow: inset 0px 1px 0px 0px #e0e0e0;
+    -webkit-box-shadow: inset 0px 1px 0px 0px #e0e0e0;
+    box-shadow: inset 0px 1px 0px 0px #e0e0e0;
+    background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, #999999), color-stop(1, #454545) );
+    background: -moz-linear-gradient( center top, #999999 5%, #454545 100% );
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#999999', endColorstr='#454545');
+    background-color: #999999;
+    border: 1px solid #454545;	display: inline-block;
+	color: #ffffff;
+	font-weight: bold;
+	padding: 3px 10px;
+	text-decoration: none; }
+
+#fMain {
+    padding: 0 0 2em; }
+
+    .fControls {
+        line-height: 1.5em;
+        margin-bottom: 1em; }
+
+        .fControls DIV.block {
+            padding: 0 0 .5em; }
+
+    #fLife { }
+
+    #lBitmap {
+        border: 1px solid #AAAAAA;
+        border-width: 1px 0 0 1px;
+        padding: 0;
+        margin-bottom: 1em; }
+
+        #lBitmap DIV {
+            border: 1px solid #AAAAAA;
+            border-width: 0 1px 1px 0;
+            float: left;
+            width: 14px;
+            height: 14px;
+            padding: 0; }
+
+        #lBitmap DIV.living {
+            background-color: #4B4B4B; }
