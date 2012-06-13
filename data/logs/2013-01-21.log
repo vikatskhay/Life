@@ -1,4 +1,0 @@
-21.01.2013 23:35:09 <ERR> 0; Action not allowed: iteration 40 is greater than the current one 39.; #0 D:\Projects\Life\application\controller\ajax\past.php(27): Life->getPastGeneration('40')
-#1 D:\Projects\Life\application\Router.php(57): include('D:\Projects\Lif...')
-#2 D:\Projects\Life\application\public\index.php(49): Router->route()
-#3 {main}
